@@ -2,15 +2,15 @@
 
 2017/10/03
 
-This document illustrates the procedure for running the sample Web application using vdmR package.
+This document illustrates the procedure for running the sample Web application using [vdmR](https://cran.r-project.org/web/packages/vdmR/index.html) package.
 
 ## Environment
 
 - Ubuntu Server 16.04 LTS (minimum install)
 
-## Procedure
+## Installation
 
-### 1. Install apache2
+### 1. Installing apache2
 
     $ sudo apt-get install apache2 apache2-dev libapreq2-dev
     $ sudo ln -s /etc/apache2/mods-available/userdir.load /etc/apache2/mods-enabled/
@@ -35,7 +35,7 @@ This document illustrates the procedure for running the sample Web application u
     $ cd ..
     $ sudo dpkg -i libapache2-mod-r-base*.deb
 
-### 4. Installing vdmR and brew
+### 4. Installing vdmR and brew package
 
     $ sudo apt-get install libgdal-dev libproj-dev libgeos-dev
     $ sudo R
@@ -44,10 +44,42 @@ This document illustrates the procedure for running the sample Web application u
 ### 5. Configuration for rApache
 
     $ sudo vi /etc/apache2/mods-available/mod_R.conf
-    $ sudo ln -s /etc/apache2/mods-available/mod_R.conf /etc/apache2/mods-enabled/
+
+Edit `mod_R.conf` as follows.
+
+```
+REvalOnStartup "library(vdmR)"
+REvalOnStartup "library(MASS)"
+
+REvalOnStartup "my.source <- function(file=NULL,envir=NULL) sys.source(file,envir=new.env(parent=globalenv()))"
+
+<Files *.R>
+        SetHandler r-script
+        RHandler my.source
+</Files>
+
+<Files *.brew>
+        SetHandler r-script
+        RHandler brew::brew
+</Files>
+```
+
+  $ sudo ln -s /etc/apache2/mods-available/mod_R.conf /etc/apache2/mods-enabled/
+
 
 ### 6. Restarting apache2
 
     $ sudo service apache2 restart
 
-### 7.
+### 7. Downloading and Setting files
+
+    $ mkdir public_html
+    $ cd public_html
+    $ git clone https://github.com/nonki1974/vdmR_webdemo
+    $ cd vdmR_webdemo
+    $ mkdir temp
+    $ chmod 777 temp
+
+### 8. Access to demo page
+
+Access to http://IP_ADDRESS/~USERNAME/vdmR_webdemo/
