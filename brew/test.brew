@@ -1,0 +1,104 @@
+<% setContentType %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>Test</title>
+</head>
+<script type="text/javascript">
+function chk_click(id){
+	sel = document.getElementById(id);
+
+	if(sel.disabled==true) sel.disabled=false;
+	else sel.disabled=true;
+
+	enable = document.getElementById(id + '_enable');
+	if(enable.value=="1") enable.value="0";
+	else enable.value="1";
+
+}
+</script>
+<body>
+<h1>Example of web interface using vdmR package</h1>
+<form method="POST" action="../R-files/test.R">
+<h3>Scatter plot</h3>
+
+<table><tr><td>
+name: <input type="text" name="scname" size="40" value="scat01"></input>
+</td></tr><tr><td>
+x-axis: <select name="scx">
+<%
+dfm <- eval(parse(text=POST$dataset))
+cn.num <- names(dfm)[sapply(dfm,class)%in%c("numeric","integer")]
+cn.cat <- setdiff(names(dfm), cn.num)
+%>
+<%= paste("<option value=\"",cn.num,"\">",cn.num,"</option>",sep="") %>
+</select>
+
+y-axis: <select name="scy">
+<%= paste("<option value=\"",cn.num,"\">",cn.num,"</option>",sep="") %>
+</select>
+
+</td></tr><tr><td>
+<input type="checkbox" onClick="chk_click('scsize');">
+<input type="hidden" name="scsize_enable" id="scsize_enable" value="0">
+size: <select name="scsize" id="scsize" disabled> 
+<%= paste("<option value=\"",cn.num,"\">",cn.num,"</option>",sep="") %>
+</select>
+
+<input type="checkbox" onClick="chk_click('sccol');">
+<input type="hidden" name="sccol_enable" id="sccol_enable" value="0">
+color: <select name="sccol" id="sccol" disabled>
+<%= paste("<option value=\"",cn.cat,"\">",cn.cat,"</option>",sep="") %>
+</select>
+</td></tr></table>
+
+<h3>Histogram</h3>
+
+<table><tr><td>
+name: <input type="text" name="hisname" size="40" value="hist01"></input>
+</td></tr><tr><td>
+
+x-axis: <select name="hisx">
+<%= paste("<option value=\"",cn.num,"\">",cn.num,"</option>",sep="") %>
+</select>
+</td></tr><tr><td>
+
+<input type="checkbox" onClick="chk_click('hisfill');">
+<input type="hidden" name="hisfill_enable" id="hisfill_enable" value="0">
+fill: <select name="hisfill" id="hisfill" disabled>
+<%= paste("<option value=\"",cn.cat,"\">",cn.cat,"</option>",sep="") %>
+</select>
+
+<input type="checkbox" onClick="chk_click('hiscol');">
+<input type="hidden" name="hiscol_enable" id="hiscol_enable" value="0">
+color: <select name="hiscol" id="hiscol" disabled>
+<%= paste("<option value=\"",cn.cat,"\">",cn.cat,"</option>",sep="") %>
+</select>
+</td></tr></table>
+
+<h3>Parallel Coordinate Plot</h3>
+
+<table><tr><td>
+name: <input type="text" name="pcpname" size="40" value="pcp01"></input>
+</td></tr><tr>
+<td style="vertical-align:top;"> 
+axis: <select name="pcpaxis" size=10 multiple>
+<%= paste("<option value=\"",cn.num,"\">",cn.num,"</option>",sep="") %>
+</select>
+<input style="vertical-align:top;" type="checkbox" onClick="chk_click('pcpgc');">
+<input type="hidden" name="pcpgc_enable" id="pcpgc_enable" value="0">
+groupColumn: <select style="vertical-align:top;" name="pcpgc" id="pcpgc" disabled>
+<%= paste("<option value=\"",cn.cat,"\">",cn.cat,"</option>",sep="") %>
+</select></tr></td></table>
+
+<br/><br/>
+<input type="hidden" name="dataset" value="<%= cat(POST$dataset)%>">
+<input type="submit">
+<input type="reset">
+</form>
+</body>
+</html>
+
