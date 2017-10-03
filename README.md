@@ -12,7 +12,12 @@ This document illustrates the procedure for running the sample Web application u
 
 ### 1. Installing apache2
 
+Install apache2 and related library for building rApache.
+
     $ sudo apt-get install apache2 apache2-dev libapreq2-dev
+
+Enable userdir Apache module.
+
     $ sudo ln -s /etc/apache2/mods-available/userdir.load /etc/apache2/mods-enabled/
     $ sudo ln -s /etc/apache2/mods-available/userdir.conf /etc/apache2/mods-enabled/
 
@@ -26,7 +31,7 @@ This document illustrates the procedure for running the sample Web application u
     $ sudo apt-get install r-base r-base-dev
 
 
-### 3. Installing rApache
+### 3. Installing [rApache](http://rapache.net/)
 
     $ sudo apt-get install devscripts git
     $ git clone https://github.com/jeffreyhorner/rapache
@@ -64,7 +69,9 @@ REvalOnStartup "my.source <- function(file=NULL,envir=NULL) sys.source(file,envi
 </Files>
 ```
 
-  $ sudo ln -s /etc/apache2/mods-available/mod_R.conf /etc/apache2/mods-enabled/
+Create symbolic link for enabiling rApache configuration.
+
+    $ sudo ln -s /etc/apache2/mods-available/mod_R.conf /etc/apache2/mods-enabled/
 
 
 ### 6. Restarting apache2
